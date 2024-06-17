@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "test:docker": "docker build -t playwright-tests . && docker run playwright-tests"
   },
   "keywords": [],
   "author": "",
