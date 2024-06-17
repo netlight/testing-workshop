@@ -1,0 +1,118 @@
+default:
+  image: node:lts
+  tags:
+    - nl-playground
+  artifacts:
+    expire_in: 2h
+    when: on_success
+services:
+  - postgres:latest
+
+variables:
+  POSTGRES_DB: police
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_HOST_AUTH_METHOD: trust
+
+stages:
+  - initialize
+  - validate
+  - test
+  - deploy
+
+# -----
+
+install-dependencies:
+  stage: initialize
+  cache:
+    - key:
+        files:
+          - backend/package-lock.json
+          - frontend/package-lock.json
+      policy: pull-push
+      paths:
+        - backend/.npm
+        - frontend/.npm
+  artifacts:
+    paths:
+      - backend/node_modules
+      - frontend/node_modules
+  script:
+    - cd backend
+    - npm ci --cache .npm --prefer-offline
+    - cd ../frontend
+    - npm ci --cache .npm --prefer-offline
+
+# -----
+
+lint-backend:
+  stage: validate
+  needs:
+    - install-dependencies
+  script:
+    - cd backend
+    - npm run lint
+
+validate-backend:
+  stage: validate
+  needs:
+    - install-dependencies
+  script:
+    - cd backend
+    - npx prettier --check
+
+# -----
+
+test-backend:
+  stage: test
+  needs:
+    - install-dependencies
+  script:
+    - cd backend
+    - npm run coverage
+  variables:
+    DATABASE_HOST: postgres
+  artifacts:
+    reports:
+      junit: "./backend/reports/tests/junit.xml"
+      coverage_report:
+        coverage_format: cobertura
+        path: "./backend/reports/coverage/cobertura.xml"
+
+test-frontend:
+  stage: test
+  needs:
+    - install-dependencies
+  script:
+    - cd frontend
+    - npm run coverage
+  artifacts:
+    reports:
+      junit: "./frontend/reports/tests/junit.xml"
+      coverage_report:
+        coverage_format: cobertura
+        path: "./frontend/reports/coverage/cobertura.xml"
+
+# -----
+
+deploy-backend:
+  stage: deploy
+  needs:
+    - install-dependencies
+    - test-backend
+  script:
+    - cd backend
+    - echo "Deployed"
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'main'
+
+deploy-frontend:
+  stage: deploy
+  needs:
+    - install-dependencies
+    - test-frontend
+  script:
+    - cd frontend
+    - echo "Deployed"
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'main'
