@@ -1,0 +1,52 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "This project was bootstrapped with Fastify-CLI.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "vitest src",
+    "test:coverage": "vitest --run --coverage src",
+    "test:e2e": "run-s docker:start test:e2e:test",
+    "test:e2e:coverage": "run-s \"test:e2e:test -- --run --coverage\"",
+    "test:e2e:test": "vitest -c vitest.e2e.config.mts test",
+    "docker:start": "docker-compose up -d",
+    "docker:stop": "docker-compose stop",
+    "coverage": "run-s test:coverage test:e2e:coverage",
+    "dev": "tsx src/index.ts",
+    "format": "prettier . --write",
+    "lint": "eslint --cache '**/*.ts'",
+    "prepare": "cd .. && husky backend/.husky"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/autoload": "^5.0.0",
+    "@fastify/sensible": "^5.0.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.26.1",
+    "fastify-cli": "^6.2.1",
+    "fastify-plugin": "^4.0.0",
+    "npm-run-all": "^4.1.5",
+    "pg": "^8.12.0",
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
+    "tsx": "^4.15.4",
+    "typeorm": "^0.3.20"
+  },
+  "devDependencies": {
+    "@ngneat/falso": "^7.2.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/node": "^20.14.2",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "@vitest/coverage-istanbul": "^1.6.0",
+    "eslint": "^8",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "prettier": "^3.3.2",
+    "ts-node": "^10.9.2",
+    "vite-tsconfig-paths": "^4.3.2"
+  }
+}

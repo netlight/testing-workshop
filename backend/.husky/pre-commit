@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+cd backend
+npm run docker:start
+npm run coverage
+npm run docker:stop
+npx lint-staged

@@ -1,0 +1,7 @@
+.gitignore
+.prettierignore
+.eslintignore
+.npmrc
+*.woff2
+.husky/
+terraform/

@@ -1,0 +1,32 @@
+@hostname = localhost
+@port = 3000
+@host = {{hostname}}:{{port}}
+@baseUrl = http://{{host}}
+@contentType = application/json
+
+###
+# @name GetOperations
+GET {{baseUrl}}/operations
+
+###
+# @name CreateOperation
+
+POST {{baseUrl}}/operations
+content-type: {{contentType}}
+
+{
+  "address": "Fake address 123",
+  "description": "This a an amazing description",
+  "isAcknowledged": false
+}
+
+###
+
+@operationId = {{CreateOperation.response.body.id}}
+# @name AcknowledgeOperation
+POST {{baseUrl}}/operations/{{operationId}}/acknowledge
+
+
+###
+# @name NeedsSupport
+GET {{baseUrl}}/operations/needs-support
