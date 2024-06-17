@@ -14,39 +14,12 @@ vi.mock("@/services/OperationService");
 describe("<OperationList />", () => {
   it("should render", () => {
     // arrange
-    const operations = [mockOperation(), mockOperation()];
-    vi.mocked(getOperations).mockReturnValue(operations);
-
+    // TODO: Use vi.mocked to alter the behavior of getOperations
     // act
-    render(<OperationList />);
-
+    // TODO: Render
     // assert
-    expect(screen.getByText(operations[0].address)).toBeInTheDocument();
-    expect(screen.getByText(operations[1].address)).toBeInTheDocument();
+    // TODO: Assert that the component renders
   });
 
-  it("should acknowledge an operation", async () => {
-    // arrange
-    const operations = [
-      mockOperation({ isAcknowledged: true }),
-      mockOperation({ isAcknowledged: false }),
-    ];
-    vi.mocked(getOperations).mockReturnValue(operations);
-    vi.mocked(acknowledgeOperation).mockImplementation((operation) =>
-      Promise.resolve({
-        ...operation,
-        isAcknowledged: true,
-        assignee: randFullName(),
-        assigneeAvatar: randAvatar(),
-      })
-    );
-    render(<OperationList />);
-    const user = userEvent.setup();
-
-    // act
-    await user.click(screen.getByText("Acknowledge"));
-
-    // assert
-    expect(screen.queryByText("Acknowledge")).not.toBeInTheDocument();
-  });
+  it.todo("should acknowledge an operation");
 });

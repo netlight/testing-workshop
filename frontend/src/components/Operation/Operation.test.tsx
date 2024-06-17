@@ -7,46 +7,25 @@ import userEvent from "@testing-library/user-event";
 describe("<Operation />", () => {
   it("should render", () => {
     // arrange
-    const operation = mockOperation();
-
+    // TODO: Create the mocks we need
     // act
-    render(<Operation operation={operation} />);
-
+    // TODO: Render the component (import { render } from "@testing-library/react")
     // assert
-    expect(
-      screen.getByText(operation.id, { exact: false })
-    ).toBeInTheDocument();
-    expect(screen.getByText(operation.description)).toBeInTheDocument();
-    expect(screen.getByText(operation.address)).toBeInTheDocument();
-    expect(
-      screen.queryByText(operation.longDescription)
-    ).not.toBeInTheDocument();
+    // TODO: Expect that some text is now on the screen (import { screen } from "@testing-library/react")
   });
 
   it("should show details on click", async () => {
     // arrange
-    const operation = mockOperation();
+    // TODO: Create the mocks we need
+    // TODO: Render the component
     const user = userEvent.setup();
-    render(<Operation operation={operation} />);
 
     // act
-    await user.click(screen.getByText(operation.description));
+    // TODO: Click on the description to show the long description (await user.click(screen.getByText(...)))
 
     // assert
-    expect(screen.getByText(operation.longDescription)).toBeInTheDocument();
+    // TODO. Expect that we see the long description
   });
 
-  it("should trigger onAcknowledge when clicking on the button", async () => {
-    // arrange
-    const operation = mockOperation({ isAcknowledged: false });
-    const user = userEvent.setup();
-    const onAcknowledge = vi.fn();
-    render(<Operation operation={operation} onAcknowledge={onAcknowledge} />);
-
-    // act
-    await user.click(screen.getByRole("button", { name: "Acknowledge" }));
-
-    // assert
-    expect(onAcknowledge).toHaveBeenCalled();
-  });
+  it.todo("should trigger onAcknowledge when clicking on the button");
 });
