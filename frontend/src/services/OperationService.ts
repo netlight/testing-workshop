@@ -22,6 +22,6 @@ export async function acknowledgeOperation(
   };
 }
 
-export function getOperations() {
+export async function getOperations() {
   return Array.from({ length: 20 }).map(() => mockOperation());
 }

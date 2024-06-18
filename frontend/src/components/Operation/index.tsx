@@ -1,5 +1,4 @@
 import { Operation as OperationModel } from "@/models/Operation";
-import { randTextRange } from "@ngneat/falso";
 import { useState } from "react";
 
 export interface OperationProps {

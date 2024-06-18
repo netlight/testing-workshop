@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   acknowledgeOperation,
   getOperations,
@@ -7,7 +7,8 @@ import { Operation as OperationModel } from "@/models/Operation";
 import { Operation } from "../Operation";
 
 export function OperationList() {
-  const [operations, setOperations] = useState(getOperations());
+  const [operations, setOperations] = useState<OperationModel[]>([]);
+  const [status, setStatus] = useState<"pending" | "success">("pending");
 
   const handleAcknowledge = useCallback(async (operation: OperationModel) => {
     const updatedOperation = await acknowledgeOperation(operation);
@@ -23,6 +24,17 @@ export function OperationList() {
       ];
     });
   }, []);
+
+  useEffect(() => {
+    getOperations().then((result) => {
+      setOperations(result);
+      setStatus("success");
+    });
+  }, []);
+
+  if (status === "pending") {
+    return <span>Loading...</span>;
+  }
 
   return (
     <div className="flex flex-col gap-4">
