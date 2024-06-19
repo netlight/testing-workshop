@@ -1,5 +1,7 @@
 import { DataSource } from 'typeorm';
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
+import { mockOperation } from '@/entity/Operation.mock';
 
 import { Operation } from '../entity/Operation';
 import { getOperationRepo } from './OperationRepo';
@@ -21,15 +23,32 @@ describe('OperationRepo', () => {
 
   it('should store and find an operation', async () => {
     // arrange
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const repo = await setupRepo();
+    const operation = mockOperation();
+    expect(await repo.findAll()).toHaveLength(0);
 
     // act
-    // TODO: Save something in the repo
+    await repo.save(operation);
 
     // assert
-    // TODO: Assert that the repo has the expected contents
+    const allResults = await repo.findAll();
+    expect(allResults).toHaveLength(1);
+    expect(allResults[0]).toEqual(operation);
   });
 
-  it.todo('should acknowledge an operation');
+  it('should acknowledge an operation', async () => {
+    // arrange
+    const repo = await setupRepo();
+    const operation = mockOperation();
+    await repo.save(operation);
+
+    // act
+    await repo.acknowledgeOperation(operation.id);
+
+    // assert
+    expect(await repo.findById(operation.id)).toEqual({
+      ...operation,
+      isAcknowledged: true,
+    });
+  });
 });
