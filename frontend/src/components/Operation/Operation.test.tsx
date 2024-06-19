@@ -3,29 +3,53 @@ import { describe, expect, it, vi } from "vitest";
 import { Operation } from ".";
 import { mockOperation } from "@/models/Operation.mock";
 import userEvent from "@testing-library/user-event";
+import { debug } from "vitest-preview";
 
 describe("<Operation />", () => {
   it("should render", () => {
     // arrange
-    // TODO: Create the mocks we need
+    const operation = mockOperation();
+
     // act
-    // TODO: Render the component (import { render } from "@testing-library/react")
+    render(<Operation operation={operation} />);
+
     // assert
-    // TODO: Expect that some text is now on the screen (import { screen } from "@testing-library/react")
+    expect(screen.getByText(operation.description)).toBeInTheDocument();
+    expect(screen.getByText(operation.address)).toBeVisible();
   });
 
   it("should show details on click", async () => {
     // arrange
-    // TODO: Create the mocks we need
-    // TODO: Render the component
+    const operation = mockOperation();
+    render(<Operation operation={operation} />);
+    const user = userEvent.setup();
+    expect(
+      screen.queryByText(operation.longDescription)
+    ).not.toBeInTheDocument();
+
+    // act
+    await user.click(
+      screen.getByRole("button", {
+        name: "toggle details",
+      })
+    );
+
+    // assert
+    expect(screen.getByText(operation.longDescription)).toBeInTheDocument();
+  });
+
+  it("should trigger onAcknowledge when clicking on the button", async () => {
+    // arrange
+    const onAcknowledge = vi.fn();
+    const operation = mockOperation({ isAcknowledged: false });
+    render(<Operation operation={operation} onAcknowledge={onAcknowledge} />);
     const user = userEvent.setup();
 
     // act
-    // TODO: Click on the description to show the long description (await user.click(screen.getByText(...)))
+    debug();
+    await user.click(screen.getByRole("button", { name: "Acknowledge" }));
 
     // assert
-    // TODO. Expect that we see the long description
+    expect(onAcknowledge).toBeCalled();
   });
-
-  it.todo("should trigger onAcknowledge when clicking on the button");
 });

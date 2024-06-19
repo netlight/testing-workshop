@@ -21,5 +21,22 @@ describe("<OperationList />", () => {
     // TODO: Assert that the component renders
   });
 
-  it.todo("should acknowledge an operation");
+  it("should acknowledge an operation", async () => {
+    // arrange
+    const operation = mockOperation({ isAcknowledged: false });
+    vi.mocked(getOperations).mockResolvedValue([operation]);
+    vi.mocked(acknowledgeOperation).mockResolvedValue({
+      ...operation,
+      isAcknowledged: true,
+    });
+    const user = userEvent.setup();
+    render(<OperationList />);
+
+    // act
+    await user.click(await screen.findByText("Acknowledge"));
+
+    // assert
+    expect(acknowledgeOperation).toHaveBeenCalledWith(operation);
+    expect(screen.queryByText("Acknowledge")).not.toBeInTheDocument();
+  });
 });

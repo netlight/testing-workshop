@@ -1,8 +1,9 @@
 import fastify from 'fastify';
-import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { buildFastify } from '@/app';
 import { AppDataSource } from '@/data-source';
+import { mockOperation } from '@/entity/Operation.mock';
 
 describe('E2E /operations', async () => {
   let app: ReturnType<typeof fastify> | undefined = undefined;
@@ -21,17 +22,38 @@ describe('E2E /operations', async () => {
 
   describe('GET /', () => {
     it('should return 200 and content', async () => {
-      // Check out the root.test.ts for some inspiration
       // act
-      // TODO: inject the call to /operations into fastify
-      //
+      const res = await app!.inject({
+        url: '/operations',
+      });
+
       // assert
-      // TODO: Expect the payload is what we expect
+      expect(JSON.parse(res.payload)).toEqual({ results: [] });
     });
   });
 
   describe('POST /', () => {
-    it.todo('should store a new operation');
+    it('should store a new operation', async () => {
+      // arrange
+      const operation = mockOperation();
+
+      // act
+      await app!.inject({
+        url: '/operations',
+        method: 'post',
+        payload: operation,
+      });
+
+      // assert
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, ...operationWithoutId } = operation;
+      const res = await app!.inject({
+        url: '/operations',
+      });
+      expect(JSON.parse(res.payload)).toEqual({
+        results: [expect.objectContaining({ ...operationWithoutId })],
+      });
+    });
   });
 
   describe('POST /:id/acknowledge', () => {
