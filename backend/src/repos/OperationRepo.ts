@@ -10,7 +10,7 @@ export function getOperationRepo(dataSource: DataSource) {
     findById(id: number) {
       return this.findOneBy({ id });
     },
-    findAll() {
+    findAll(): Promise<Operation[]> {
       return this.find();
     },
   });

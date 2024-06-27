@@ -1,4 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { OperationList } from ".";
 import {
@@ -12,13 +16,17 @@ import { randAvatar, randFullName } from "@ngneat/falso";
 vi.mock("@/services/OperationService");
 
 describe("<OperationList />", () => {
-  it("should render", () => {
+  it("should render", async () => {
     // arrange
-    // TODO: Use vi.mocked to alter the behavior of getOperations
+    const operation = mockOperation();
+    vi.mocked(getOperations).mockResolvedValue([operation]);
+
     // act
-    // TODO: Render
+    render(<OperationList />);
+
     // assert
-    // TODO: Assert that the component renders
+    await waitForElementToBeRemoved(screen.getByText("Loading..."));
+    expect(await screen.findByText(operation.description)).toBeInTheDocument();
   });
 
   it.todo("should acknowledge an operation");
